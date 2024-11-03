@@ -1,8 +1,9 @@
 package model;
 
-public class Tarea {
+public class Tarea implements Comparable<Tarea> {
 	private String id, nombre;
 	private Integer tiempoEjecucion, nivelPrioridad;
+	private Boolean esCritica;
 
 	public String getId() {
 		return id;
@@ -44,5 +45,8 @@ public class Tarea {
 		this.esCritica = esCritica;
 	}
 
-	private Boolean esCritica;
+	@Override
+	public int compareTo(Tarea otraTarea) {
+		return this.nivelPrioridad.compareTo(otraTarea.getNivelPrioridad());
+	}
 }

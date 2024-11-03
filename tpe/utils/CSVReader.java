@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import model.Procesador;
 import model.Tarea;
@@ -18,7 +21,7 @@ public class CSVReader {
 
 	public List<Tarea> readTasks(String taskPath) {
 		ArrayList<String[]> lines = this.readContent(taskPath);
-		List<Tarea> tareasLeidas = new LinkedList<>();
+		List<Tarea> tareas = new ArrayList<>();
 
 		for (String[] line : lines) {
 			// Cada linea es un arreglo de Strings, donde cada posicion guarda un elemento
@@ -35,10 +38,16 @@ public class CSVReader {
 			t.setTiempoEjecucion(tiempo);
 			t.setEsCritica(critica);
 			t.setNivelPrioridad(prioridad);
-			tareasLeidas.add(t);
+			tareas.add(t);
 		}
 
-		return tareasLeidas;
+		tareas.sort(new Comparator<Tarea>() {
+			@Override
+			public int compare(Tarea o1, Tarea o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		return tareas;
 	}
 
 	public List<Procesador> readProcessors(String processorPath) {
@@ -71,11 +80,8 @@ public class CSVReader {
 		ArrayList<String[]> lines = new ArrayList<String[]>();
 
 		File file = new File(path);
-		FileReader fileReader = null;
-		BufferedReader bufferedReader = null;
-		try {
-			fileReader = new FileReader(file);
-			bufferedReader = new BufferedReader(fileReader);
+		try (FileReader fileReader = new FileReader(file);
+				BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 			String line = null;
 			while ((line = bufferedReader.readLine()) != null) {
 				line = line.trim();
@@ -83,12 +89,6 @@ public class CSVReader {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (bufferedReader != null)
-				try {
-					bufferedReader.close();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
 		}
 
 		return lines;
