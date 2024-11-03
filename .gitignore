@@ -1,0 +1,5 @@
+# Ignorar la carpeta .idea
+.idea/
+
+# Ignorar el archivo tpe-progIII.iml
+tpe-progIII.iml
