@@ -49,4 +49,11 @@ public class Tarea implements Comparable<Tarea> {
 	public int compareTo(Tarea otraTarea) {
 		return this.nivelPrioridad.compareTo(otraTarea.getNivelPrioridad());
 	}
+
+	@Override
+	public String toString() {
+		return "Tarea [id=" + id + ", nombre=" + nombre + ", tiempoEjecucion=" + tiempoEjecucion + ", nivelPrioridad="
+				+ nivelPrioridad + ", esCritica=" + esCritica + "]";
+	}
+
 }

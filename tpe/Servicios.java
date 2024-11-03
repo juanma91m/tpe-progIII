@@ -58,8 +58,46 @@ public class Servicios {
 
 	/*
 	 * Expresar la complejidad temporal del servicio 3.
+	 * O(Log N + K)
+	 * N: cantidad de elementos
+	 * K: cantidad de elementos que cumplen la condición. En el peor de los casos es N.
 	 */
 	public List<Tarea> servicio3(int prioridadInferior, int prioridadSuperior) {
+		int inicio = buscarIndice(tareas, prioridadInferior, true);
+		int fin = buscarIndice(tareas, prioridadSuperior, false);
+
+		if (inicio < tareas.size() && fin >= 0 && inicio <= fin) {
+			return tareas.subList(inicio, fin + 1);
+		}
 		return new ArrayList<>();
+	}
+
+	// Busqueda binaria O(Log N)
+	private int buscarIndice(List<Tarea> tareas, int prioridad, boolean buscarInicio) {
+		int left = 0, right = tareas.size() - 1;
+
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+			int midPrioridad = tareas.get(mid).getNivelPrioridad();
+
+			if (midPrioridad < prioridad) {
+				// Buscar en la parte derecha
+				left = mid + 1;
+			} else if (midPrioridad > prioridad) {
+				// Buscar en la parte izquierda
+				right = mid - 1;
+			} else {
+				// Encontrado, buscar el índice extremo
+				if (buscarInicio) {
+					// Buscar el primer índice igual
+					right = mid - 1;
+				} else {
+					// Buscar el último índice igual
+					left = mid + 1;
+				}
+			}
+		}
+
+		return buscarInicio ? left : right;
 	}
 }
