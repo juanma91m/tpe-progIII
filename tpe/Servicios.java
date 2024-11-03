@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
 import model.Procesador;
+import model.Solucion;
 import model.Tarea;
 import tpe.utils.CSVReader;
 
@@ -57,10 +55,9 @@ public class Servicios {
 	}
 
 	/*
-	 * Expresar la complejidad temporal del servicio 3.
-	 * O(Log N + K)
-	 * N: cantidad de elementos
-	 * K: cantidad de elementos que cumplen la condición. En el peor de los casos es N.
+	 * Expresar la complejidad temporal del servicio 3. O(Log N + K) N: cantidad de
+	 * elementos K: cantidad de elementos que cumplen la condición. En el peor de
+	 * los casos es N.
 	 */
 	public List<Tarea> servicio3(int prioridadInferior, int prioridadSuperior) {
 		int inicio = buscarIndice(tareas, prioridadInferior, true);
@@ -99,5 +96,29 @@ public class Servicios {
 		}
 
 		return buscarInicio ? left : right;
+	}
+
+	public Solucion backTracking(Integer tiempoMaxNoRefrigerados) {
+		Solucion s = new Solucion();
+		for (Procesador p : procesadores) {
+			s.getMapSolucion().put(p, new LinkedList<Tarea>());
+		}
+
+		return s;
+	}
+
+	private void backTracking(Solucion sFinal, Solucion sParcial, List<Tarea> tRestantes) {
+		if (tRestantes.isEmpty()) {
+			if (sParcial.getTiempoFinal() < sFinal.getTiempoFinal()) {
+				sFinal = sParcial.clone();
+			}
+		} else {
+
+		}
+	}
+
+	public Solucion greedy(Integer tiempoMaxNoRefrigerados) {
+
+		return null;
 	}
 }

@@ -56,4 +56,14 @@ public class Tarea implements Comparable<Tarea> {
 				+ nivelPrioridad + ", esCritica=" + esCritica + "]";
 	}
 
+	public Tarea clone() {
+		Tarea t = new Tarea();
+		t.setId(this.id);
+		t.setNombre(this.nombre);
+		t.setEsCritica(this.esCritica);
+		t.setNivelPrioridad(this.nivelPrioridad);
+		t.setTiempoEjecucion(this.tiempoEjecucion);
+
+		return t;
+	}
 }

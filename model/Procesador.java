@@ -36,4 +36,14 @@ public class Procesador {
 	public void setAnioFuncionamiento(Integer anioFuncionamiento) {
 		this.anioFuncionamiento = anioFuncionamiento;
 	}
+	
+	public Procesador clone() {
+		Procesador p = new Procesador();
+		p.setId(this.id);
+		p.setAnioFuncionamiento(this.anioFuncionamiento);
+		p.setCodigo(this.codigo);
+		p.setEsRefrigerado(this.esRefrigerado);
+		
+		return p;
+	}
 }

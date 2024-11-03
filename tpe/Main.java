@@ -1,5 +1,7 @@
 package tpe;
 
+import model.Solucion;
+
 public class Main {
 
 	public static void main(String args[]) {
@@ -7,5 +9,6 @@ public class Main {
 		System.out.println(servicios.servicio1("T1"));
 		System.out.println(servicios.servicio2(true));
 		System.out.println(servicios.servicio3(10,109));
+		
 	}
 }
