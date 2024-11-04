@@ -52,8 +52,9 @@ public class Tarea implements Comparable<Tarea> {
 
 	@Override
 	public String toString() {
-		return "Tarea [id=" + id + ", nombre=" + nombre + ", tiempoEjecucion=" + tiempoEjecucion + ", nivelPrioridad="
-				+ nivelPrioridad + ", esCritica=" + esCritica + "]";
+		return "Tarea [id=" + id //+ ", nombre=" + nombre + ", tiempoEjecucion=" + tiempoEjecucion + ", nivelPrioridad="
+				//+ nivelPrioridad + ", esCritica=" + esCritica
+				+ "]";
 	}
 
 	public Tarea clone() {
@@ -65,5 +66,10 @@ public class Tarea implements Comparable<Tarea> {
 		t.setTiempoEjecucion(this.tiempoEjecucion);
 
 		return t;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
 	}
 }

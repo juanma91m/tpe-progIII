@@ -46,4 +46,12 @@ public class Procesador {
 		
 		return p;
 	}
+
+	@Override
+	public String toString() {
+		return "Procesador{" +
+				"id='" + id + //'\'' +
+				//", esRefrigerado=" + esRefrigerado +
+				'}';
+	}
 }

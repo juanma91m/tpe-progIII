@@ -1,6 +1,7 @@
 package model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,15 @@ public class Solucion {
 
 	public Solucion clone() {
 		Solucion s = new Solucion();
-		s.setMapSolucion(mapSolucion);
+		for (Procesador p : this.getMapSolucion().keySet()){
+			s.getMapSolucion().put(p, new LinkedList<Tarea>(this.getMapSolucion().get(p)));
+		}
+
 		return s;
+	}
+	@Override
+	public String toString(){
+
+		return this.getMapSolucion().toString();
 	}
 }

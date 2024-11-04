@@ -1,5 +1,6 @@
 package tpe;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ public class Servicios {
 	private Map<String, Tarea> mapTareasId;
 	private Map<Boolean, List<Tarea>> mapTareasEsCritica;
 	private List<Tarea> tareas;
+	private ArrayList<Solucion> soluciones;
 
 	/*
 	 * Expresar la complejidad temporal del constructor.
@@ -38,6 +40,7 @@ public class Servicios {
 			mapTareasId.put(t.getId(), t);
 			mapTareasEsCritica.get(t.getEsCritica()).add(t);
 		}
+		this.soluciones = new ArrayList<Solucion>();
 	}
 
 	/*
@@ -103,17 +106,36 @@ public class Servicios {
 		for (Procesador p : procesadores) {
 			s.getMapSolucion().put(p, new LinkedList<Tarea>());
 		}
+		Solucion s2 = new Solucion();
+		for (Procesador p : procesadores) {
+			s2.getMapSolucion().put(p, new LinkedList<Tarea>());
+		}
 
+		backTracking(s,s2,new ArrayList<>(this.tareas));
+
+		System.out.println(this.soluciones.size());
 		return s;
 	}
 
 	private void backTracking(Solucion sFinal, Solucion sParcial, List<Tarea> tRestantes) {
 		if (tRestantes.isEmpty()) {
-			if (sParcial.getTiempoFinal() < sFinal.getTiempoFinal()) {
-				sFinal = sParcial.clone();
+			if (sFinal.getTiempoFinal() ==0 || sParcial.getTiempoFinal() < sFinal.getTiempoFinal()) {
+				//sFinal = sParcial.clone();
+				soluciones.add(sParcial.clone());
+				System.out.println(sParcial);
 			}
-		} else {
 
+			return;
+		}
+
+		Tarea actual = tRestantes.get(0);
+
+		for (Procesador p : sParcial.getMapSolucion().keySet()) {
+
+			sParcial.getMapSolucion().get(p).add(actual);
+			List<Tarea> tRestantesSiguiente = new ArrayList<>(tRestantes.subList(1, tRestantes.size()));
+			backTracking(sFinal, sParcial, tRestantesSiguiente);
+			sParcial.getMapSolucion().get(p).remove(actual);
 		}
 	}
 
