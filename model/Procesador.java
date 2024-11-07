@@ -50,8 +50,7 @@ public class Procesador {
 	@Override
 	public String toString() {
 		return "Procesador{" +
-				"id='" + id + //'\'' +
-				//", esRefrigerado=" + esRefrigerado +
+				"id=" + id +
 				'}';
 	}
 }

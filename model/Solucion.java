@@ -34,10 +34,9 @@ public class Solucion {
 
 		return tiempoFinal;
 	}
-
+	@Override
 	public Solucion clone() {
-
-        Solucion s = new Solucion();
+		Solucion s = new Solucion();
 		for (Procesador p : this.getMapSolucion().keySet()){
 			s.getMapSolucion().put(p, new LinkedList<Tarea>(this.getMapSolucion().get(p)));
 		}

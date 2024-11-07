@@ -21,8 +21,8 @@ public class Servicios {
 	private Map<String, Tarea> mapTareasId;
 	private Map<Boolean, List<Tarea>> mapTareasEsCritica;
 	private List<Tarea> tareas;
-	private Integer contador = 0;
-	private Solucion mejorSolucion;
+
+
 	/*
 	 * Expresar la complejidad temporal del constructor.
 	 */
@@ -41,7 +41,13 @@ public class Servicios {
 			mapTareasEsCritica.get(t.getEsCritica()).add(t);
 		}
 	}
+	public List<Tarea> getTareas(){
+		return new ArrayList<>(this.tareas);
+	}
 
+	public List<Procesador> getProcesadores(){
+		return new ArrayList<>(this.procesadores);
+	}
 	/*
 	 * Expresar la complejidad temporal del servicio 1. O(1)
 	 */
@@ -98,48 +104,6 @@ public class Servicios {
 		}
 
 		return buscarInicio ? left : right;
-	}
-
-	public Solucion backTracking(Integer tiempoMaxNoRefrigerados) {
-		Solucion s = new Solucion();
-		mejorSolucion = new Solucion();
-		for (Procesador p : procesadores) {
-			s.getMapSolucion().put(p, new LinkedList<Tarea>());
-			mejorSolucion.getMapSolucion().put(p, new LinkedList<Tarea>());
-		}
-
-
-		backTracking(s,new ArrayList<>(this.tareas),tiempoMaxNoRefrigerados);
-		System.out.println(mejorSolucion);
-		return mejorSolucion;
-	}
-
-	private void backTracking(Solucion sParcial, List<Tarea> tRestantes, Integer tiempoMax) {
-		if (tRestantes.isEmpty()) {
-			if (mejorSolucion.getTiempoFinal() ==0 || sParcial.getTiempoFinal() < mejorSolucion.getTiempoFinal()) {
-				mejorSolucion = sParcial.clone();
-			}
-			return;
-		}
-		Tarea actual = tRestantes.get(0);
-
-		for (Procesador p : sParcial.getMapSolucion().keySet()) {
-			List<Tarea> tareasActuales = sParcial.getMapSolucion().get(p);
-			Integer cantCriticas = 0, tiempoActual = 0;
-			for (Tarea t : tareasActuales){
-				cantCriticas+= t.getEsCritica() ? 1 : 0;
-				tiempoActual+= t.getTiempoEjecucion();
-			}
-			if((!actual.getEsCritica() || cantCriticas ==0)&&
-					(p.getEsRefrigerado() || tiempoActual+actual.getTiempoEjecucion()<=tiempoMax)){
-				sParcial.getMapSolucion().get(p).add(actual);
-				List<Tarea> tRestantesSiguiente = new ArrayList<>(tRestantes.subList(1, tRestantes.size()));
-				backTracking(sParcial, tRestantesSiguiente,tiempoMax);
-				sParcial.getMapSolucion().get(p).remove(actual);
-			}
-
-		}
-
 	}
 
 	public Solucion greedy(Integer tiempoMaxNoRefrigerados) {
