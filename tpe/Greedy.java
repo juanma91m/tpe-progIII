@@ -1,12 +1,9 @@
 package tpe;
-
 import model.Procesador;
 import model.Solucion;
 import model.Tarea;
-
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 public class Greedy {
     private Servicios servicio;
@@ -16,8 +13,8 @@ public class Greedy {
     public Greedy(Servicios s){
         servicio = s;
         cantCandidatos = 0;
+        this.mejorSolucion = new Solucion();
     }
-
     /*
      * Comenzamos con un arreglo de Tareas ordenado de forma descendente por tiempo de ejecución.
      * Para cada tarea a asignar, buscamos los procesadores posibles, es decir,
@@ -27,14 +24,11 @@ public class Greedy {
      * de ejecución acumulado en sus tareas asignadas.
      */
     public Solucion greedy (Integer tiempoMaxNoRefrigerados){
-        Solucion s = new Solucion();
         for (Procesador p : servicio.getProcesadores()) {
-            s.getMapSolucion().put(p, new LinkedList<Tarea>());
+            mejorSolucion.addMapSolucion(p);
         }
         List<Tarea> tareas = servicio.getTareas();
-        /*
-        * Ordena las tareas por su tiempo de ejecucion.
-        * */
+        //Ordena las tareas por su tiempo de ejecucion.
         tareas.sort((o1, o2) -> {
             if (o1.getTiempoEjecucion()<o2.getTiempoEjecucion()){
                 return 1;
@@ -43,44 +37,36 @@ public class Greedy {
             }
             return 0;
         });
-
+        mejorSolucion.setHaySolucion(true);
         for (Tarea tarea : tareas) {
-            Procesador mejorProce = mejorProcesadorDisponible(s.getMapSolucion(),tarea,tiempoMaxNoRefrigerados);
+            Procesador mejorProce = mejorProcesadorDisponible(mejorSolucion.getMapSolucion(),tarea,tiempoMaxNoRefrigerados);
             if (mejorProce != null){
-                s.getMapSolucion().get(mejorProce).add(tarea);
+                mejorProce.addTarea(tarea);
+                if(mejorProce.getTiempoTotalAsignado()>mejorSolucion.getTiempoFinal()){
+                    mejorSolucion.setTiempoFinal(mejorProce.getTiempoTotalAsignado());
+                }
+            }else{
+                mejorSolucion.setHaySolucion(false);
             }
-
         }
-        mejorSolucion = s;
-        return s;
+        return mejorSolucion;
     }
-    private Procesador mejorProcesadorDisponible(Map<Procesador, List<Tarea>> mapaActual, Tarea actual, Integer tiempoMax){
+
+    private Procesador mejorProcesadorDisponible(HashSet<Procesador> mapaActual, Tarea actual, Integer tiempoMax){
         Procesador mejorProce = null;
         int menorTiempo = 0;
-        for (Procesador p : mapaActual.keySet()) {
-            List<Tarea> tareas = mapaActual.get(p);
-            int cantCriticas=0;
-            int tiempoActual=0;
-            for (Tarea tarea : tareas) {
-                if (tarea.getEsCritica()){
-                    cantCriticas++;
-                }
-                tiempoActual+=tarea.getTiempoEjecucion();
-            }
-            if((!actual.getEsCritica() || cantCriticas <2)&&
-                    (p.getEsRefrigerado() || tiempoActual+actual.getTiempoEjecucion()<=tiempoMax)){
-                if (mejorProce==null || menorTiempo>tiempoActual){
+        for (Procesador p : mapaActual) {
+            cantCandidatos++;
+            if((!actual.getEsCritica() || p.getCantidadCriticas() <2)&&
+                    (p.getEsRefrigerado() || p.getTiempoTotalAsignado()+actual.getTiempoEjecucion()<=tiempoMax)){
+                if (mejorProce==null || menorTiempo>p.getTiempoTotalAsignado()){
                     mejorProce = p;
-                    menorTiempo = tiempoActual;
-                    cantCandidatos++;
+                    menorTiempo = p.getTiempoTotalAsignado();
+
                 }
             }
         }
         return mejorProce;
-    }
-
-    public int getCantCandidatos() {
-        return cantCandidatos;
     }
 
     public void imprimirSolucion(){
@@ -88,6 +74,5 @@ public class Greedy {
         System.out.println("Solución obtenida: " + mejorSolucion);
         System.out.println("Solución obtenida tiempo máximo de ejecución: " + mejorSolucion.getTiempoFinal());
         System.out.println("Cantidad de candidatos: " + cantCandidatos);
-
     }
 }

@@ -1,51 +1,50 @@
 package model;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Solucion {
-	private Map<Procesador, List<Tarea>> mapSolucion;
+	//private Map<Procesador, List<Tarea>> mapSolucion;
+	private HashSet<Procesador> mapSolucionNueva;
+	private int tiempoFinal;
+	private boolean haySolucion;
 
 	public Solucion() {
-		mapSolucion = new HashMap<>();
+		//mapSolucion = new HashMap<>();
+		mapSolucionNueva = new HashSet<>();
+		tiempoFinal = 0;
+		haySolucion = false;
+	}
+	public boolean getHaySolucion(){return this.haySolucion;}
+	public void setHaySolucion(boolean haySol){this.haySolucion = haySol;}
+	public HashSet<Procesador> getMapSolucion() {
+		return mapSolucionNueva;
 	}
 
-	public Map<Procesador, List<Tarea>> getMapSolucion() {
-		return mapSolucion;
+	public void addMapSolucion(Procesador p){this.mapSolucionNueva.add(p);}
+
+	public void setMapSolucion(HashSet<Procesador> mapSolucion) {
+		this.mapSolucionNueva = mapSolucion;
 	}
+	public void setTiempoFinal(int tFinal){this.tiempoFinal = tFinal;}
+	public int getTiempoFinal(){return this.tiempoFinal;}
 
-	public void setMapSolucion(Map<Procesador, List<Tarea>> mapSolucion) {
-		this.mapSolucion = mapSolucion;
-	}
 
-	public Integer getTiempoFinal() {
-		Integer tiempoFinal = 0;
-		for (Procesador p : mapSolucion.keySet()) {
-			Integer tiempoParcial = 0;
-			List<Tarea> tareas = mapSolucion.get(p);
-			for (Tarea t : tareas) {
-				tiempoParcial += t.getTiempoEjecucion();
-			}
-
-			tiempoFinal = tiempoFinal < tiempoParcial ? tiempoParcial : tiempoFinal;
-		}
-
-		return tiempoFinal;
-	}
 	@Override
 	public Solucion clone() {
 		Solucion s = new Solucion();
-		for (Procesador p : this.getMapSolucion().keySet()){
-			s.getMapSolucion().put(p, new LinkedList<Tarea>(this.getMapSolucion().get(p)));
+		for (Procesador p : this.mapSolucionNueva){
+			s.mapSolucionNueva.add(new Procesador(p));
 		}
-
+		s.setTiempoFinal(this.tiempoFinal);
 		return s;
 	}
 	@Override
 	public String toString(){
+		if(this.haySolucion){
+			return this.getMapSolucion().toString();
+		}else{
+			return "NO HAY SOLUCION";
+		}
 
-		return this.getMapSolucion().toString();
 	}
 }

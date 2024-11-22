@@ -27,14 +27,14 @@ public class Backtracking {
      *
      * Además, se aplica una condición de poda basada en tareas críticas y en un tiempo máximo de ejecución para los procesadores refrigerados.
      */
-    public Solucion backTracking(Integer tiempoMaxNoRefrigerados) {
-        Solucion s = new Solucion();
+
+    public Solucion backTracking(Integer tiempoMaxNoRefrigerados){
         mejorSolucion = new Solucion();
         for (Procesador p : servicio.getProcesadores()) {
-            s.getMapSolucion().put(p, new LinkedList<Tarea>());
-            mejorSolucion.getMapSolucion().put(p, new LinkedList<Tarea>());
+            mejorSolucion.addMapSolucion(p);
         }
-        backTracking(s,servicio.getTareas(),tiempoMaxNoRefrigerados);
+
+        backTracking(mejorSolucion.clone(),servicio.getTareas(),tiempoMaxNoRefrigerados);
         return mejorSolucion;
     }
 
@@ -43,26 +43,28 @@ public class Backtracking {
         if (tRestantes.isEmpty()) {
             if (mejorSolucion.getTiempoFinal() ==0 || sParcial.getTiempoFinal() < mejorSolucion.getTiempoFinal()) {
                 mejorSolucion = sParcial.clone();
+                mejorSolucion.setHaySolucion(true);
             }
             return;
         }
         Tarea actual = tRestantes.get(0);
+        for (Procesador p : sParcial.getMapSolucion()) {
+            if((!actual.getEsCritica() || p.getCantidadCriticas() <2)&&
+                    (p.getEsRefrigerado() || p.getTiempoTotalAsignado()+actual.getTiempoEjecucion()<=tiempoMax)){
+                p.addTarea(actual);
+                int aux = 0;
 
-        for (Procesador p : sParcial.getMapSolucion().keySet()) {
-            List<Tarea> tareasActuales = sParcial.getMapSolucion().get(p);
-            Integer cantCriticas = 0, tiempoActual = 0;
-            for (Tarea t : tareasActuales){
-                cantCriticas+= t.getEsCritica() ? 1 : 0;
-                tiempoActual+= t.getTiempoEjecucion();
-            }
-            if((!actual.getEsCritica() || cantCriticas <2)&&
-                    (p.getEsRefrigerado() || tiempoActual+actual.getTiempoEjecucion()<=tiempoMax)){
-                sParcial.getMapSolucion().get(p).add(actual);
+                if(p.getTiempoTotalAsignado()>sParcial.getTiempoFinal()){
+                    aux = sParcial.getTiempoFinal();
+                    sParcial.setTiempoFinal(p.getTiempoTotalAsignado());
+                }
                 List<Tarea> tRestantesSiguiente = new ArrayList<>(tRestantes.subList(1, tRestantes.size()));
                 backTracking(sParcial, tRestantesSiguiente,tiempoMax);
-                sParcial.getMapSolucion().get(p).remove(actual);
+                if (aux !=0){
+                    sParcial.setTiempoFinal(aux);
+                }
+                p.eliminarTarea(actual);
             }
-
         }
 
     }

@@ -24,13 +24,12 @@ public class Servicios {
 
 
 	/*
-	 * Expresar la complejidad temporal del constructor.
+	 * Complejidad O(Maximo(P,T)) donde P son la cantidad de procesadores y T son la cantidad de tareas.
 	 */
 	public Servicios(String pathProcesadores, String pathTareas) {
 		CSVReader reader = new CSVReader();
 		procesadores = reader.readProcessors(pathProcesadores);
 		tareas = reader.readTasks(pathTareas);
-
 		mapTareasId = new HashMap<>();
 		mapTareasEsCritica = new HashMap<>();
 		mapTareasEsCritica.put(true, new LinkedList<Tarea>());

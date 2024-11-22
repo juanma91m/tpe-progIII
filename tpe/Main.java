@@ -11,12 +11,12 @@ public class Main {
 		System.out.println(servicios.servicio2(true));
 		System.out.println(servicios.servicio3(10,109));
 
-		Backtracking b = new Backtracking(servicios);
-		b.backTracking(1000);
-		b.imprimirSolucion();
+		//Backtracking b = new Backtracking(servicios);
+		//b.backTracking(100);
+		//b.imprimirSolucion();
 
 		Greedy d = new Greedy(servicios);
-		d.greedy(10);
+		d.greedy(200);
 		d.imprimirSolucion();
 
 	}
